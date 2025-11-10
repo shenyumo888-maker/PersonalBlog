@@ -1,28 +1,95 @@
-
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}  <!-- 关键：导入新安装的 widget_tweaks 库 -->
 
 {% block title %}创建新账户{% endblock %}
 
 {% block extra_head %}
-<!-- 直接复用登录页面的样式 -->
+<!-- 页面特定的样式 -->
 <style>
-    body { background: linear-gradient(to right, #f8f9fa, #e9ecef); }
-    .auth-container { display: flex; align-items: center; justify-content: center; min-height: 80vh; }
-    .auth-card { width: 100%; max-width: 450px; border: none; border-radius: 15px; box-shadow: var(--shadow-large); overflow: hidden; animation: fadeIn 0.5s ease-out; }
-    .auth-card-header { background: var(--primary-gradient); color: white; padding: 2rem; text-align: center; }
-    .auth-card-header h2 { margin: 0; font-weight: 300; }
-    .auth-card-body { padding: 2.5rem; }
-    .form-control { border-radius: 8px; padding: 1rem 1rem 1rem 3rem; transition: all 0.3s ease; }
-    .form-control:focus { box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); border-color: #667eea; }
-    .input-group-text { background: transparent; border: none; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); z-index: 5; color: #adb5bd; }
-    .input-group { position: relative; }
-    .btn-auth { background: var(--primary-gradient); border: none; border-radius: 8px; padding: 0.8rem; font-weight: bold; transition: all 0.3s ease; box-shadow: var(--shadow-primary); }
-    .btn-auth:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4); }
-    .auth-footer-link { color: #764ba2; text-decoration: none; font-weight: 500; }
-    .auth-footer-link:hover { text-decoration: underline; }
-    .form-error { color: #dc3545; font-size: 0.875em; } /* 错误信息的样式 */
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    body { 
+        background: linear-gradient(to right, #f8f9fa, #e9ecef); 
+    }
+    .auth-container { 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        min-height: 80vh; 
+    }
+    .auth-card { 
+        width: 100%; 
+        max-width: 450px; 
+        border: none; 
+        border-radius: 15px; 
+        box-shadow: var(--shadow-large); 
+        overflow: hidden; 
+        animation: fadeIn 0.5s ease-out; 
+    }
+    .auth-card-header { 
+        background: var(--primary-gradient); 
+        color: white; 
+        padding: 2rem; 
+        text-align: center; 
+    }
+    .auth-card-header h2 { 
+        margin: 0; 
+        font-weight: 300; 
+    }
+    .auth-card-body { 
+        padding: 2.5rem; 
+    }
+    .form-control { 
+        border-radius: 8px; 
+        padding: 1rem 1rem 1rem 3rem; 
+        transition: all 0.3s ease; 
+    }
+    .form-control:focus { 
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); 
+        border-color: #667eea; 
+    }
+    .input-group-text { 
+        background: transparent; 
+        border: none; 
+        position: absolute; 
+        left: 15px; 
+        top: 50%; 
+        transform: translateY(-50%); 
+        z-index: 5; 
+        color: #adb5bd; 
+    }
+    .input-group { 
+        position: relative; 
+    }
+    .btn-auth { 
+        background: var(--primary-gradient); 
+        border: none; 
+        border-radius: 8px; 
+        padding: 0.8rem; 
+        font-weight: bold; 
+        transition: all 0.3s ease; 
+        box-shadow: var(--shadow-primary); 
+    }
+    .btn-auth:hover { 
+        transform: translateY(-3px); 
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4); 
+    }
+    .auth-footer-link { 
+        color: #764ba2; 
+        text-decoration: none; 
+        font-weight: 500; 
+    }
+    .auth-footer-link:hover { 
+        text-decoration: underline; 
+    }
+    .form-error { 
+        color: #dc3545; 
+        font-size: 0.875em; 
+        padding-left: 5px;
+    }
+    @keyframes fadeIn { 
+        from { opacity: 0; transform: translateY(20px); } 
+        to { opacity: 1; transform: translateY(0); } 
+    }
 </style>
 {% endblock %}
 
@@ -33,44 +100,49 @@
             <h2>加入我们</h2>
         </div>
         <div class="auth-card-body">
-
-            <!-- ########## START: 这是我们修改的部分 ########## -->
+            
             <form method="post">
                 {% csrf_token %}
                 
-                <!-- 手动渲染每个字段，避免模板渲染错误，更稳定 -->
+                <!-- 使用 widget_tweaks 的 render_field 标签来正确添加 HTML 属性 -->
+                
+                <!-- 用户名 -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fas fa-user"></i></span>
-                    {{ form.username.as_widget(attrs={'class': 'form-control', 'placeholder': '用户名', 'required': True}) }}
+                    {% render_field form.username class="form-control" placeholder="用户名" required="True" %}
                 </div>
                 {% if form.username.errors %}<div class="form-error mb-2">{{ form.username.errors.as_text }}</div>{% endif %}
 
+                <!-- 邮箱 -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                    {{ form.email.as_widget(attrs={'class': 'form-control', 'placeholder': '邮箱', 'required': True}) }}
+                    {% render_field form.email class="form-control" type="email" placeholder="邮箱" required="True" %}
                 </div>
                 {% if form.email.errors %}<div class="form-error mb-2">{{ form.email.errors.as_text }}</div>{% endif %}
 
+                <!-- 密码 -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    {{ form.password.as_widget(attrs={'class': 'form-control', 'placeholder': '密码', 'required': True}) }}
+                    {% render_field form.password class="form-control" placeholder="密码" required="True" %}
                 </div>
                 {% if form.password.errors %}<div class="form-error mb-2">{{ form.password.errors.as_text }}</div>{% endif %}
 
+                <!-- 确认密码 -->
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
-                    {{ form.password2.as_widget(attrs={'class': 'form-control', 'placeholder': '确认密码', 'required': True}) }}
+                    {% render_field form.password2 class="form-control" placeholder="确认密码" required="True" %}
                 </div>
                 {% if form.password2.errors %}<div class="form-error mb-2">{{ form.password2.errors.as_text }}</div>{% endif %}
                 
-                <!-- 显示非字段相关的总错误（比如两次密码不匹配） -->
+                <!-- 显示非字段相关的总错误（例如：两次密码不匹配） -->
                 {% if form.non_field_errors %}
-                    <div class="form-error mb-2">{{ form.non_field_errors.as_text }}</div>
+                    <div class="alert alert-danger" role="alert">
+                        {{ form.non_field_errors.as_text }}
+                    </div>
                 {% endif %}
 
                 <button type="submit" class="btn btn-primary w-100 mt-3 btn-auth">创建账户</button>
             </form>
-            <!-- ########## END: 这是我们修改的部分 ########## -->
 
             <div class="text-center mt-4">
                 <p class="text-muted">
