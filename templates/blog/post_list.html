@@ -1,0 +1,121 @@
+<!-- templates/blog/post_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}首页 - 我的博客{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- 主内容区 -->
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">最新文章</h1>
+            {% if user.is_authenticated %}
+            <a href="{% url 'blog:post_create' %}" class="btn btn-primary">
+                ✏️ 写文章
+            </a>
+            {% endif %}
+        </div>
+
+        {% for post in page_obj %}
+        <article class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title h4">
+                    <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark">
+                        {{ post.title }}
+                    </a>
+                </h2>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3 text-muted small">
+                    <div>
+                        <span>👤 {{ post.author.username }}</span>
+                        <span class="mx-2">•</span>
+                        <span>📅 {{ post.created_at|date:"Y-m-d H:i" }}</span>
+                    </div>
+                    <div>
+                        <span>❤️ {{ post.likes.count }} 点赞</span>
+                        <span class="mx-2">•</span>
+                        <span>💬 {{ post.comments.count }} 评论</span>
+                    </div>
+                </div>
+                
+                <p class="card-text">{{ post.content|truncatewords:50|striptags }}</p>
+                
+                <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                    阅读全文 →
+                </a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="card text-center py-5">
+            <div class="card-body">
+                <h3 class="text-muted">暂无文章</h3>
+                <p class="text-muted">快来发布第一篇文章吧！</p>
+                {% if user.is_authenticated %}
+                <a href="{% url 'blog:post_create' %}" class="btn btn-primary mt-3">
+                    开始写作
+                </a>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn btn-primary mt-3">
+                    登录后写作
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- 分页 -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">上一页</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">上一页</span>
+                </li>
+                {% endif %}
+                
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        第 {{ page_obj.number }} 页 / 共 {{ page_obj.paginator.num_pages }} 页
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">下一页</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">下一页</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+
+    <!-- 侧边栏 -->
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">关于本站</h5>
+                <p class="card-text">这是一个基于Django开发的博客系统，支持文章发布、评论互动、点赞等功能。</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">统计信息</h5>
+                <ul class="list-unstyled">
+                    <li>📊 文章总数: {{ page_obj.paginator.count }}</li>
+                    <li>👥 注册用户: 统计中...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

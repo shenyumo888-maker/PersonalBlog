@@ -1,0 +1,32 @@
+<!-- templates/comments/form.html -->
+{% if user.is_authenticated %}
+<div class="comment-form-card card mt-5">
+    <div class="card-header text-center">
+        💬 发表评论
+    </div>
+    <div class="card-body">
+        <form method="post" action="{% url 'comments:add_comment' slug=post.slug %}" class="comment-form">
+            {% csrf_token %}
+            <div class="mb-3">
+                <textarea class="form-control" name="content" rows="4" 
+                          placeholder="写下你的想法..." required></textarea>
+            </div>
+            <input type="hidden" name="parent_id" value="" class="parent-id">
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary px-4">
+                    📤 发布评论
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info mt-5 text-center">
+    <div class="mb-2">
+        <i class="fas fa-lock fa-2x"></i>
+    </div>
+    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary">
+        🔑 登录后评论
+    </a>
+</div>
+{% endif %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}已安全退出{% endblock %}
+
+{% block extra_head %}
+<style>
+    body { background: linear-gradient(to right, #f8f9fa, #e9ecef); }
+    .auth-container { display: flex; align-items: center; justify-content: center; min-height: 80vh; text-align: center;}
+    .logout-card { width: 100%; max-width: 500px; padding: 3rem; background: white; border-radius: 15px; box-shadow: var(--shadow-large); animation: fadeIn 0.5s ease-out; }
+    .logout-icon { font-size: 4rem; color: #20c997; margin-bottom: 1.5rem; }
+    .btn-home { background: var(--success-gradient); border: none; color: white; border-radius: 8px; padding: 0.8rem 2rem; font-weight: bold; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(32, 201, 151, 0.3); }
+    .btn-home:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(32, 201, 151, 0.4); color: white; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<!-- 5秒后自动跳转回首页 -->
+<meta http-equiv="refresh" content="5;url={% url 'blog:post_list' %}">
+
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="logout-card">
+        <div class="logout-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2>您已安全退出</h2>
+        <p class="text-muted my-4">感谢您的访问，期待您的下次到来。</p>
+        <a href="{% url 'blog:post_list' %}" class="btn btn-home">返回首页</a>
+        <p class="text-muted mt-3 small">(页面将在5秒后自动跳转)</p>
+    </div>
+</div>
+{% endblock %}

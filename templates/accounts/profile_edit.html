@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}编辑个人资料{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>编辑你的个人资料</h2>
+        <hr>
+        
+        <!-- 关键点: form 标签必须有 enctype="multipart/form-data" 才能上传文件 -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <fieldset class="mb-4">
+                <legend class="border-bottom pb-2 mb-3">账户信息</legend>
+                {{ u_form.as_p }}
+            </fieldset>
+
+            <fieldset>
+                <legend class="border-bottom pb-2 mb-3">个人资料</legend>
+                {{ p_form.as_p }}
+            </fieldset>
+            
+            <button type="submit" class="btn btn-primary mt-3">保存更改</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

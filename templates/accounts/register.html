@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}创建新账户{% endblock %}
+
+{% block extra_head %}
+<!-- 直接复用登录页面的样式 -->
+<style>
+    body { background: linear-gradient(to right, #f8f9fa, #e9ecef); }
+    .auth-container { display: flex; align-items: center; justify-content: center; min-height: 80vh; }
+    .auth-card { width: 100%; max-width: 450px; border: none; border-radius: 15px; box-shadow: var(--shadow-large); overflow: hidden; animation: fadeIn 0.5s ease-out; }
+    .auth-card-header { background: var(--primary-gradient); color: white; padding: 2rem; text-align: center; }
+    .auth-card-header h2 { margin: 0; font-weight: 300; }
+    .auth-card-body { padding: 2.5rem; }
+    .form-control { border-radius: 8px; padding: 1rem 1rem 1rem 3rem; transition: all 0.3s ease; }
+    .form-control:focus { box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); border-color: #667eea; }
+    .input-group-text { background: transparent; border: none; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); z-index: 5; color: #adb5bd; }
+    .input-group { position: relative; }
+    .btn-auth { background: var(--primary-gradient); border: none; border-radius: 8px; padding: 0.8rem; font-weight: bold; transition: all 0.3s ease; box-shadow: var(--shadow-primary); }
+    .btn-auth:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4); }
+    .auth-footer-link { color: #764ba2; text-decoration: none; font-weight: 500; }
+    .auth-footer-link:hover { text-decoration: underline; }
+    .form-error { color: #dc3545; font-size: 0.875em; margin-top: 0.25rem; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="card auth-card">
+        <div class="auth-card-header">
+            <h2>加入我们</h2>
+        </div>
+        <div class="auth-card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="input-group mb-3">
+                    {% if field.name == 'username' %}<span class="input-group-text"><i class="fas fa-user"></i></span>{% endif %}
+                    {% if field.name == 'email' %}<span class="input-group-text"><i class="fas fa-envelope"></i></span>{% endif %}
+                    {% if field.name == 'password' %}<span class="input-group-text"><i class="fas fa-lock"></i></span>{% endif %}
+                    {% if field.name == 'password2' %}<span class="input-group-text"><i class="fas fa-check-circle"></i></span>{% endif %}
+                    
+                    {{ field.as_widget(attrs={'class': 'form-control', 'placeholder': field.label}) }}
+                </div>
+                {% if field.errors %}
+                    <div class="form-error mb-2">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% endfor %}
+                
+                <button type="submit" class="btn btn-primary w-100 mt-3 btn-auth">创建账户</button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted">
+                    已有账户？ <a href="{% url 'accounts:login' %}" class="auth-footer-link">直接登录</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

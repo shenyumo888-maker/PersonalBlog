@@ -1,0 +1,123 @@
+﻿{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }} - 我的博客{% endblock %}
+
+{% block content %}
+<div class="article-header text-center">
+    <h1 class="article-title">{{ post.title }}</h1>
+    <div class="article-meta">
+        <span>作者：{{ post.author }}</span>
+        <span class="mx-3">•</span>
+        <span>{{ post.created_at|date:"Y-m-d H:i" }}</span>
+    </div>
+</div>
+
+<article class="bg-white rounded-3 shadow-sm p-4 p-md-5">
+    <div class="article-content">
+        {{ post.content|linebreaks }}
+    </div>
+</article>
+
+<!-- 添加阅读时间计算 -->
+<script>
+    // 计算阅读时间
+    function calculateReadingTime() {
+        const article = document.querySelector('.article-content');
+        const text = article.textContent || article.innerText;
+        const wordCount = text.trim().split(/\s+/).length;
+        const readingTime = Math.ceil(wordCount / 200); // 假设200字/分钟
+        
+        const metaElement = document.querySelector('.article-meta');
+        if (metaElement) {
+            const timeElement = document.createElement('span');
+            timeElement.className = 'reading-time';
+            timeElement.innerHTML = `⏱️ 阅读时间约 ${readingTime} 分钟`;
+            metaElement.appendChild(timeElement);
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', calculateReadingTime);
+</script>
+
+<!-- 点赞区域 -->
+<div class="like-section text-center">
+    {% if user.is_authenticated %}
+        <form action="{% url 'comments:toggle_like' slug=post.slug %}" method="post" class="like-form d-inline-block">
+            {% csrf_token %}
+            <input type="hidden" name="slug" value="{{ post.slug }}">
+            {% if user in post.likes.all %}
+                <button type="submit" class="like-btn btn btn-danger">
+                    ❤️ 取消点赞
+                </button>
+            {% else %}
+                <button type="submit" class="like-btn btn btn-primary">
+                    🤍 点赞
+                </button>
+            {% endif %}
+        </form>
+    {% else %}
+        <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary">
+            🔑 登录后点赞
+        </a>
+    {% endif %}
+    <div class="like-count mt-2 fs-5 fw-bold text-muted">
+        ❤️ {{ post.likes.count }} 人点赞
+    </div>
+</div>
+
+<!-- 在点赞区域后添加进度条 -->
+<div class="reading-progress mb-4">
+    <div class="progress" style="height: 4px;">
+        <div class="progress-bar" role="progressbar" style="width: 0%; background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+    </div>
+</div>
+
+<script>
+// 阅读进度条
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBar = document.querySelector('.progress-bar');
+    const article = document.querySelector('article');
+    
+    function updateProgress() {
+        const articleTop = article.offsetTop;
+        const articleHeight = article.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const scrollTop = window.pageYOffset;
+        
+        if (scrollTop > articleTop - windowHeight) {
+            const progress = ((scrollTop + windowHeight - articleTop) / articleHeight) * 100;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+        }
+    }
+    
+    window.addEventListener('scroll', updateProgress);
+    window.addEventListener('resize', updateProgress);
+});
+</script>
+
+<!-- 评论区 -->
+<div class="comments-section">
+    <h3 class="mb-4 pb-2 border-bottom">💬 评论区 ({{ post.comments.count }})</h3>
+    
+    <!-- 评论列表 -->
+    {% include "comments/_list.html" with comments=post.comments.all %}
+    
+    <!-- 评论表单 -->
+    {% include "comments/form.html" %}
+</div>
+
+<!-- 文章操作按钮 -->
+{% if user.is_authenticated and user == post.author or user.is_staff %}
+<div class="mt-4 pt-3 border-top text-center">
+    <a href="#" class="btn btn-outline-primary me-2">✏️ 编辑</a>
+    <a href="#" class="btn btn-outline-danger">🗑️ 删除</a>
+</div>
+{% endif %}
+
+<div class="text-center mt-4">
+    <a href="{% url 'blog:post_list' %}" class="btn btn-outline-secondary">
+        ← 返回文章列表
+    </a>
+</div>
+{% endblock %}
