@@ -1,0 +1,19 @@
+<!-- templates/comments/_list.html -->
+{% if comments %}
+  <ul class="list-unstyled">
+    {% for c in comments %}
+      <li class="mb-2">
+        <div><strong>{{ c.user.username }}</strong> <small class="text-muted">{{ c.created_at|date:"Y-m-d H:i" }}</small></div>
+        <div>{{ c.content|linebreaks }}</div>
+        {% if user.is_authenticated and (c.user == user or user.is_superuser or post.author == user) %}
+          <form method="post" action="{% url 'comments:delete_comment' id=c.id %}" class="mt-1">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-danger" type="submit">删除</button>
+          </form>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>还没有评论，快来抢沙发！</p>
+{% endif %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{% if post %}编辑文章{% else %}写文章{% endif %}</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">提交</button>
+</form>
+{% endblock %}

@@ -1,0 +1,11 @@
+<!-- templates/blog/post_delete_confirm.html -->
+{% extends "base.html" %}
+{% block content %}
+<h1>确认删除</h1>
+<p>确定要删除《{{ post.title }}》吗？此操作不可撤销。</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">确认删除</button>
+  <a href="{% url 'blog:post_list' %}">取消</a>
+</form>
+{% endblock %}

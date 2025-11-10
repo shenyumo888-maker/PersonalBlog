@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>文章列表</h1>
+<a href="{% url 'blog:post_create' %}">写文章</a>
+<ul>
+  {% for post in posts %}
+    <li>
+      <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+      <small>by {{ post.author }} · {{ post.published_date|date:"Y-m-d H:i" }}</small>
+    </li>
+  {% empty %}
+    <li>暂无文章</li>
+  {% endfor %}
+</ul>
+
+<div class="pagination">
+  {% if posts.has_previous %}
+    <a href="?page={{ posts.previous_page_number }}">上一页</a>
+  {% endif %}
+  <span>第 {{ posts.number }} / {{ posts.paginator.num_pages }} 页</span>
+  {% if posts.has_next %}
+    <a href="?page={{ posts.next_page_number }}">下一页</a>
+  {% endif %}
+</div>
+{% endblock %}
