@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'accounts',
     'blog',
     'comments',
+    'widget_tweaks', # <--- 把这行加在最后
 ]
 
 MIDDLEWARE = [
