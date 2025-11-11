@@ -23,9 +23,9 @@ def create_superuser(apps, schema_editor):
 
     # 创建超级用户
     User.objects.create_superuser(
-        username=admin,
-        email=EMAIL,
-        password=ceshi111
+        username=USERNAME,  # <-- 必须是变量 USERNAME
+        email=EMAIL,        # <-- 必须是变量 EMAIL
+        password=PASSWORD   # <-- 必须是变量 PASSWORD
     )
     print(f"超级用户 '{USERNAME}' 创建成功。")
 
@@ -41,3 +41,4 @@ class Migration(migrations.Migration):
         migrations.RunPython(create_superuser),
 
     ]
+
