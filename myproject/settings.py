@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 项目 apps
-    'accounts',
+    'accounts.apps.AccountsConfig',
     'blog',
     'comments',
     'widget_tweaks', # <--- 把这行加在最后
