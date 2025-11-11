@@ -34,8 +34,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('accounts', '0001_initial'), # 依赖于上一个迁移文件
+        ('accounts', '0002_alter_profile_avatar_alter_profile_bio_and_more'), # <--- 把这一行加进去！
     ]
 
     operations = [
         migrations.RunPython(create_superuser),
+
     ]
